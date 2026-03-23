@@ -62,7 +62,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/bac-hunter.git
+git clone https://github.com/TheMursalin/bac-hunter.git
 cd bac-hunter
 
 # Install dependencies
