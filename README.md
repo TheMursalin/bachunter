@@ -1,118 +1,138 @@
-# 🔐 BAC Hunter
-### Broken Access Control Bug Bounty Suite · OWASP A01:2021
+# 🛡️ BAC Hunter — Broken Access Control Bug Bounty Suite
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green)
-![OWASP](https://img.shields.io/badge/OWASP-A01%3A2021-red)
-![Version](https://img.shields.io/badge/Version-2.0-blueviolet)
-![Status](https://img.shields.io/badge/Status-Active-brightgreen)
+<p align="center">
+  <img src="https://img.shields.io/badge/version-v3.0.0-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/OWASP-A01%3A2021-red?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/python-3.10%2B-yellow?style=for-the-badge&logo=python" />
+  <img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Bug%20Bounty-Ready-orange?style=for-the-badge" />
+</p>
 
 > **For authorised penetration testing and bug bounty programs ONLY.**
-> Only run against systems you own or have explicit written permission to test. Unauthorised use is illegal and unethical.
+> Only run against systems you own or have explicit written permission to test.
+> Unauthorised use is illegal and unethical.
 
 ---
 
-## 📖 Overview
+## 📖 What is BAC Hunter?
 
-**BAC Hunter** is a low-noise, bug-bounty-ready Python suite for detecting **Broken Access Control** vulnerabilities — the #1 vulnerability class in the OWASP Top 10 (A01:2021). It automates 19 targeted test cases covering everything from basic admin panel enumeration to JWT algorithm bypass, all with stealth controls designed for real-world engagements.
+**BAC Hunter** is a focused, low-noise Python tool for detecting **Broken Access Control** vulnerabilities — the #1 threat in the OWASP Top 10 (A01:2021). It is purpose-built for bug bounty hunters and penetration testers who need a reliable, stealthy, and readable scanner that covers a wide range of real-world BAC attack patterns.
+
+Unlike bloated all-in-one scanners, BAC Hunter does one thing and does it well — finding access control flaws across 20 distinct test categories, with built-in stealth controls for responsible disclosure workflows.
 
 ---
 
 ## ✨ Features
 
-- **19 automated tests** covering the full OWASP A01:2021 attack surface
-- **Stealth mode** — User-Agent rotation, jitter delays, and automatic rate-limit backoff
-- **Passive mode** — zero destructive or mutating actions, safe for production environments
-- **Severity-tagged findings** — Critical / High / Medium / Low classification
-- **JSON report export** for clean documentation and triage
-- **Burp Suite proxy integration** out of the box
-- **Custom UA lists, credentials, and delay windows** for flexible engagements
+- ✅ **20 test categories** covering OWASP A01:2021 in depth
+- 🥷 **Stealth mode** — UA rotation, randomised jitter, automatic rate-limit backoff
+- 🔒 **Passive mode** — skips all destructive PoC actions (safe for production targets)
+- 📄 **JSON report output** — structured findings with severity levels
+- 🎯 **Selective testing** — run only the tests you need with `--test`
+- 🔁 **Retry logic** — exponential backoff on connection errors
+- 🌐 **Proxy support** — plug straight into Burp Suite
+- 🏷️ **Severity tagging** — Critical / High / Medium / Low on every finding
 
 ---
 
-## 🧪 Test Coverage
+## 🧪 Tests Covered
 
-| # | Test Name | Severity |
-|---|-----------|----------|
-| 01 | Unprotected Admin Panel (Path Brute) | High |
-| 02 | Admin Path Disclosed in Page Source | Medium |
-| 03 | Cookie-Based Bypass (`Admin=true`) | High |
-| 04 | Role ID Escalation via JSON Body | High |
-| 05 | X-Original-URL / X-Rewrite-URL Header Override | High |
-| 06 | HTTP Method Bypass (GET on POST-only endpoint) | Medium |
-| 07 | IDOR — Horizontal Escalation (`?id=`) | High |
-| 08 | IDOR — GUID Leaked in Page | Medium |
-| 09 | IDOR — Sensitive Data in 302 Body | High |
+| # | Test | Severity |
+|---|------|----------|
+| 01 | Unprotected Admin Panel (predictable paths) | Critical/High |
+| 02 | Admin Path Disclosed in Page Source / JS | High |
+| 03 | Cookie-Based Bypass (`Admin=true`, `role=admin`, …) | Critical/High |
+| 04 | Role ID Privilege Escalation via JSON / Form body | High |
+| 05 | X-Original-URL / X-Rewrite-URL / Forwarded Header Override | Critical/High |
+| 06 | HTTP Method Bypass (GET on POST-only endpoints) | Medium |
+| 07 | IDOR — Horizontal Escalation (`?id=`, `?userId=`) | High |
+| 08 | IDOR — GUID / UUID Leaked in Page | High |
+| 09 | IDOR — Sensitive Data in 302 Redirect Body | High |
 | 10 | IDOR — Admin Password Extraction | Critical |
-| 11 | IDOR — Insecure File Download | High |
-| 12 | Missing Function-Level Access Control (POST) | High |
+| 11 | IDOR — Insecure File Download (predictable filenames) | High |
+| 12 | Missing Function-Level Access Control (POST / DELETE) | High |
 | 13 | Referer-Based Access Control Bypass | Medium |
-| 14 | IP Spoofing / Forwarding Headers Bypass 🆕 | High |
-| 15 | Path Normalisation / Encoding Bypass 🆕 | Medium |
-| 16 | HTTP Verb Tampering (HEAD, OPTIONS, PATCH) 🆕 | Medium |
-| 17 | Mass Assignment (Extra Privilege Fields) 🆕 | High |
-| 18 | HTTP Parameter Pollution (Duplicate Params) 🆕 | Medium |
-| 19 | JWT "none" Algorithm Bypass 🆕 | Critical |
+| 14 | IP Spoofing / Forwarding Headers Bypass | Critical/High |
+| 15 | Path Normalisation / Encoding Bypass | High |
+| 16 | HTTP Verb Tampering (HEAD, OPTIONS, TRACE, PATCH) | Medium |
+| 17 | Mass Assignment (extra privilege fields) | High |
+| 18 | HTTP Parameter Pollution (duplicate params) | Medium |
+| 19 | HTTP Method Switching (GET→POST→DELETE on restricted endpoints) | High |
+| 20 | Authorization Parameter Fuzzing (`?admin=true`, `&role=admin`, …) | Medium |
 
 ---
 
-## ⚙️ Installation
-
-**Requirements:** Python 3.10+
+## 🚀 Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/TheMursalin/bac-hunter.git
-cd bac-hunter
+git clone https://github.com/TheMursalin/bachunter.git
+cd bachunter
+pip install -r requirements.txt
+```
 
-# Install dependencies
-pip install requests beautifulsoup4 urllib3
+### Requirements
+
+```
+requests
+beautifulsoup4
+urllib3
+lxml
+```
+
+Or install directly:
+
+```bash
+pip install requests beautifulsoup4 urllib3 lxml
 ```
 
 ---
 
-## 🚀 Usage
+## 🔧 Usage
 
-```bash
+```
 python3 bac_hunter.py <target_url> [options]
 ```
 
-### Examples
+### Basic Examples
 
 ```bash
-# Full scan with stealth and passive mode (recommended for bug bounties)
+# Run all 20 tests with stealth mode and no destructive actions
 python3 bac_hunter.py https://target.com --stealth --passive
 
 # Run specific tests only
-python3 bac_hunter.py https://target.com --test 1 5 14 15 16 --stealth
+python3 bac_hunter.py https://target.com --test 1 5 14 19 20 --stealth
 
-# Export findings to JSON with Burp proxy
-python3 bac_hunter.py https://target.com --proxy http://127.0.0.1:8080 --output findings.json
+# Save findings to JSON report (great for writeups)
+python3 bac_hunter.py https://target.com --output findings.json
 
-# Custom credentials, no proxy
+# Use with Burp Suite proxy
+python3 bac_hunter.py https://target.com --proxy http://127.0.0.1:8080
+
+# Custom credentials + no proxy
 python3 bac_hunter.py https://target.com --creds admin:hunter2 --no-proxy
 
-# List all available tests
-python3 bac_hunter.py https://target.com --list
+# Adjust timeout for slow targets
+python3 bac_hunter.py https://target.com --timeout 30 --stealth
 ```
 
----
-
-## 🛠️ Options
+### All Options
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--stealth` | Enable UA rotation, jitter delays, and rate-limit backoff | Off |
-| `--passive` | Skip all destructive / mutating PoC actions | Off |
-| `--delay MIN MAX` | Custom jitter window in seconds | `0.8–2.5s` (stealth) |
-| `--proxy URL` | Proxy URL for traffic inspection | `http://127.0.0.1:8080` |
+| `url` | Target base URL | *(required)* |
+| `--test N [N ...]` | Run specific test numbers (1–20) | all tests |
+| `--stealth` | UA rotation + longer jitter + rate-limit backoff | off |
+| `--passive` | Skip all destructive / mutating PoC actions | off |
+| `--delay MIN MAX` | Custom jitter window in seconds | `0.3–1.0` (or `0.8–2.5` in stealth) |
+| `--proxy URL` | Proxy URL | `http://127.0.0.1:8080` |
 | `--no-proxy` | Disable proxy entirely | — |
-| `--verify-ssl` | Enable SSL certificate verification | Off |
-| `--creds U:P` | Override test credentials | `wiener:peter` |
-| `--ua FILE` | Load custom User-Agent list (one per line) | Built-in pool |
-| `--test N [N...]` | Run specific test numbers only | All tests |
+| `--verify-ssl` | Enable SSL certificate verification | off |
+| `--creds USER:PASS` | Test credentials | `wiener:peter` |
+| `--ua FILE` | Custom User-Agent list (one per line) | built-in pool |
 | `--output FILE` | Write JSON findings report to file | — |
-| `--list` | Print all available tests and exit | — |
+| `--timeout N` | Request timeout in seconds | `15` |
+| `--list` | List all available tests and exit | — |
+| `--version` | Show version and exit | — |
 
 ---
 
@@ -120,39 +140,42 @@ python3 bac_hunter.py https://target.com --list
 
 ```
 ╔═══════════════════════════════════════════════════════════════╗
-║        BAC Hunter  ·  Broken Access Control  v2.0             ║
-║        OWASP A01:2021  ·  Low-noise  ·  Bug Bounty Ready      ║
+║        BAC Hunter  ·  Broken Access Control  v3.0.0           ║
+║        OWASP A01:2021  ·  Low‑noise  ·  Bug Bounty Ready      ║
 ║        For authorised testing and research only               ║
 ╚═══════════════════════════════════════════════════════════════╝
 
-  Target    : https://target.com
-  Stealth   : ON  (UA rotation + jitter + rate-limit backoff)
-  Passive   : ON  (no destructive PoC actions)
+  Target     : https://target.com
+  Stealth    : ON  (UA rotation + jitter + rate‑limit backoff)
+  Passive    : ON  (no destructive PoC actions)
 
-═══════════════════════════════════════════════════════════════════
+─────────────────────────────────────────────────────────────────
+  TEST 01  ·  Unprotected Admin Panel  [High]
+─────────────────────────────────────────────────────────────────
+  [*] Probing: https://target.com/administrator-panel
+  [VULN] Admin panel accessible at: https://target.com/administrator-panel  (HTTP 200)
+
+═════════════════════════════════════════════════════════════════
   SUMMARY OF FINDINGS
-═══════════════════════════════════════════════════════════════════
-  [VULN]  Test 03 — Cookie-Based Bypass              [High]
-  [VULN]  Test 10 — IDOR Admin Password Extraction   [Critical]
-  [VULN]  Test 19 — JWT "none" Algorithm Bypass      [Critical]
-  [SAFE]  Test 01 — Unprotected Admin Panel
-  ...
-═══════════════════════════════════════════════════════════════════
+═════════════════════════════════════════════════════════════════
+  [VULN]  Test 01 — Unprotected Admin Panel  [Critical]
+           Accessible at /administrator-panel without authentication
+  [SAFE]  Test 02 — Admin Path in Source
 ```
 
-### JSON Report Structure
+### JSON Report Format
 
 ```json
 {
-  "tool": "BAC Hunter v2.0",
+  "tool": "BAC Hunter v3.0.0",
   "target": "https://target.com",
-  "timestamp": "2025-01-01T12:00:00Z",
+  "timestamp": "2026-04-23T10:00:00Z",
   "summary": {
-    "total_tests": 19,
+    "total_tests": 20,
     "vulnerabilities": 3,
     "by_severity": {
-      "Critical": 2,
-      "High": 1,
+      "Critical": 1,
+      "High": 2,
       "Medium": 0,
       "Low": 0
     }
@@ -163,51 +186,51 @@ python3 bac_hunter.py https://target.com --list
 
 ---
 
-## 🥷 Stealth Controls
+## 🔄 Changelog
 
-BAC Hunter is designed to operate quietly in bug bounty programs where noise can get you blocked or disqualified.
+### v3.0.0 — Quality Refactor
+- `Config` dataclass replaces scattered global variables
+- `Finding` dataclass with typed fields replaces raw dicts
+- Proper `Timeout` and `ConnectionError` handling in all requests
+- Extracted reusable helpers: `extract_api_key()`, `extract_password_field()`, `_handle_rate_limit()`
+- CSRF extraction now checks 4 common field names (`csrf`, `_csrf`, `csrfmiddlewaretoken`, `authenticity_token`)
+- URL validated before any tests run
+- New `--timeout` CLI flag
+- `--version` flag now works correctly
+- `frozenset` for admin page indicators (faster lookups)
+- Full type annotations throughout the codebase
+- Login detection checks multiple logout link patterns
 
-- **User-Agent rotation** — cycles through a realistic pool of browser UAs (or your custom list)
-- **Jitter delays** — randomised sleep between requests to mimic human behaviour
-- **Rate-limit backoff** — automatically respects `429` responses with `Retry-After` support
-- **Passive mode** — disables all write/mutate operations, making it safe for production targets
+### v2.0.0
+- Added Tests 19 & 20 (Method Switching, Auth Param Fuzzing)
+- Stealth mode with UA rotation and jitter
+- Passive mode for safe production testing
+- JSON report output
 
----
-
-## 🛡️ Remediation Guidance
-
-If BAC Hunter detects vulnerabilities, here's what to fix:
-
-- **Enforce server-side access control** on every endpoint — never trust client-supplied roles, cookies, headers, or IPs
-- **Use indirect object references** — never expose raw database IDs in URLs or request bodies
-- **Validate JWTs properly** — reject the `none` algorithm and verify signatures server-side
-- **Restrict HTTP methods** — only allow the methods each endpoint is designed to handle
-- **Audit mass assignment** — whitelist allowed fields, never bind user input directly to privileged models
-
----
-
-## 🤝 Contributing
-
-Contributions, new test ideas, and bug reports are welcome!
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/test-20-new-bypass`)
-3. Commit your changes (`git commit -m 'Add test 20: new bypass technique'`)
-4. Push to the branch (`git push origin feature/test-20-new-bypass`)
-5. Open a Pull Request
+### v1.0.0
+- Initial release with 18 BAC test categories
 
 ---
 
-## ⚠️ Disclaimer
+## ⚠️ Legal Disclaimer
 
-BAC Hunter is intended **strictly for authorised security testing and educational purposes**. The authors are not responsible for any misuse or damage caused by this tool. Always obtain explicit written permission before testing any system you do not own.
+This tool is intended **exclusively** for:
+- Authorised penetration testing engagements
+- Bug bounty programs where you have written scope permission
+- Security research on systems you own
+
+**The author takes no responsibility for misuse.** Running this tool against systems without explicit authorisation is illegal in most jurisdictions and violates the terms of service of most bug bounty platforms.
+
+---
+
+## 👤 Author
+
+**Mursalin** — [@TheMursalin](https://github.com/TheMursalin)
+
+If this tool helped you find a bug, a ⭐ on the repo is always appreciated!
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
-
----
-
-<p align="center">Built with ❤️ for the bug bounty community · Happy hunting 🎯</p>
+MIT License — see [LICENSE](LICENSE) for details.
